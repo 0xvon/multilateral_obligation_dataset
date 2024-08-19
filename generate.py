@@ -13,7 +13,7 @@ n_nodes = 100000  # number of nodes
 
 # Generate degrees for each node using a power-law distribution
 degrees = np.random.zipf(alpha, n_nodes)
-degrees = degrees[degrees >= x_min]
+# degrees = degrees[degrees >= x_min]
 
 # Ensure that the degrees sum to an even number (required for a valid graph)
 if sum(degrees) % 2 != 0:
