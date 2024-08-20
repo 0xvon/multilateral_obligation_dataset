@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 # Read the CSV file
-edges_df = pd.read_csv('b2b_transactions.csv')
+edges_df = pd.read_csv('b2b_transactions_n15.csv')
 
 # Create a graph from the DataFrame
 G = nx.from_pandas_edgelist(edges_df, 'source', 'target', ['amount'])

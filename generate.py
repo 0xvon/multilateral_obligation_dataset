@@ -9,11 +9,16 @@ alpha = 2.5
 x_min = 3
 amount_min = 100
 amount_max = 10000
-n_nodes = 100000  # number of nodes
+n_nodes = 15  # number of nodes
+csv_file = 'b2b_transactions_n15.csv'
 
 # Generate degrees for each node using a power-law distribution
 degrees = np.random.zipf(alpha, n_nodes)
-# degrees = degrees[degrees >= x_min]
+
+# Ensure all nodes have a degree of at least 3
+for i in range(len(degrees)):
+    if degrees[i] < 3:
+        degrees[i] = 3
 
 # Ensure that the degrees sum to an even number (required for a valid graph)
 if sum(degrees) % 2 != 0:
@@ -26,10 +31,20 @@ G = nx.configuration_model(degrees)
 G = nx.Graph(G)  # Convert to simple graph
 G.remove_edges_from(nx.selfloop_edges(G))
 
+# Check if any node still has a degree less than 3 after conversion
+while any(d < 3 for _, d in G.degree()):
+    # Find nodes with degree less than 3
+    low_degree_nodes = [node for node, degree in G.degree() if degree < 3]
+    
+    for node in low_degree_nodes:
+        # Randomly select another node to connect with, ensuring no self-loops
+        possible_targets = [n for n in G.nodes if n != node and not G.has_edge(node, n)]
+        if possible_targets:
+            target = random.choice(possible_targets)
+            G.add_edge(node, target)
+
 # Assign random transaction amounts to each edge
-# amounts = np.random.zipf(alpha, len(G.edges))
-# amounts = [max(x, x_min) for x in amounts]  # Ensure minimum transaction amount
-amounts = [random.randint(amount_min, amount_max) for _ in range(n_nodes)]
+amounts = [random.randint(amount_min, amount_max) for _ in range(len(G.edges))]
 
 for (u, v), amount in zip(G.edges(), amounts):
     G[u][v]['amount'] = amount
@@ -41,11 +56,11 @@ edges_df = pd.DataFrame([(u, v, G[u][v]['amount']) for u, v in G.edges()],
 edges_df.head()
 
 # Optional: Save the DataFrame to a CSV file
-edges_df.to_csv('b2b_transactions.csv', index=False)
+edges_df.to_csv(csv_file, index=False)
 
 # Optional: Plot the degree distribution to check
 degrees = [d for n, d in G.degree()]
-plt.hist(degrees, bins=100)
+plt.hist(degrees, bins=range(1, max(degrees) + 2))
 plt.yscale('log')
 plt.xscale('log')
 plt.xlabel('Degree')
