@@ -36,7 +36,9 @@ source,target,amount
 
 Network
 
-<img src="./assets/graph.png" width="500">
+<img src="./assets/graph_n15.png" width="500">
+<img src="./assets/graph_n30.png" width="500">
+<img src="./assets/graph_n100.png" width="500">
 
 Power-law distribution
 

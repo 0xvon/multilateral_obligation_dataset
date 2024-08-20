@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 
 # Read the CSV file
-edges_df = pd.read_csv('b2b_transactions_n15.csv')
+edges_df = pd.read_csv('b2b_transactions_n100000.csv')
 
 # Create a graph from the DataFrame
 G = nx.from_pandas_edgelist(edges_df, 'source', 'target', ['amount'])
@@ -34,5 +34,5 @@ sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
 sm.set_array([])
 plt.colorbar(sm, label="Node Degree")
 
-plt.title("B2B Transaction Network with Node Colors Based on Degree")
+plt.title(f"B2B Transaction Network with Node Colors Based on Degree (n={len(G.nodes)}, m={len(G.edges)})")
 plt.show()

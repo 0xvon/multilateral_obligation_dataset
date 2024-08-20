@@ -9,16 +9,16 @@ alpha = 2.5
 x_min = 3
 amount_min = 100
 amount_max = 10000
-n_nodes = 15  # number of nodes
-csv_file = 'b2b_transactions_n15.csv'
+n_nodes = 100000  # number of nodes
+csv_file = 'b2b_transactions_n100000.csv'
 
 # Generate degrees for each node using a power-law distribution
 degrees = np.random.zipf(alpha, n_nodes)
 
 # Ensure all nodes have a degree of at least 3
 for i in range(len(degrees)):
-    if degrees[i] < 3:
-        degrees[i] = 3
+    if degrees[i] < x_min:
+        degrees[i] = x_min
 
 # Ensure that the degrees sum to an even number (required for a valid graph)
 if sum(degrees) % 2 != 0:
@@ -31,10 +31,10 @@ G = nx.configuration_model(degrees)
 G = nx.Graph(G)  # Convert to simple graph
 G.remove_edges_from(nx.selfloop_edges(G))
 
-# Check if any node still has a degree less than 3 after conversion
-while any(d < 3 for _, d in G.degree()):
-    # Find nodes with degree less than 3
-    low_degree_nodes = [node for node, degree in G.degree() if degree < 3]
+# Check if any node still has a degree less than x_min after conversion
+while any(d < x_min for _, d in G.degree()):
+    # Find nodes with degree less than x_min
+    low_degree_nodes = [node for node, degree in G.degree() if degree < x_min]
     
     for node in low_degree_nodes:
         # Randomly select another node to connect with, ensuring no self-loops
